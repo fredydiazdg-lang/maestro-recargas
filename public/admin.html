@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Admin · Maestro Recargas</title><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{font:16px system-ui;margin:0;padding:14px;max-width:760px;margin:auto;background:#f5f5fb;color:#14142b}.c{background:#fff;border:1px solid #ddd;border-radius:14px;padding:12px;margin:10px 0}button{padding:8px 12px;border-radius:999px;border:1px solid #bbb;background:#fff;margin:2px}button.on{background:#7c3aed;color:#fff}textarea,input{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;font:inherit}small{color:#666}</style></head><body>
+<h2>📦 Pedidos</h2><div id="o"></div><h2>⚙ Configuración (productos, precios, pagos)</h2><textarea id="cf" rows="14"></textarea><p><button id="sc">Guardar configuración</button></p>
+<script>
+const H=()=>({'x-admin':sessionStorage.p,'Content-Type':'application/json'});
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function api(u,b){const r=await fetch(u,{method:b?'POST':'GET',headers:H(),body:b?JSON.stringify(b):undefined});if(r.status===401){sessionStorage.p=prompt('Contraseña de admin');return api(u,b)}return r.json()}
+async function load(){const L=await api('/api/orders');
+ document.title='('+L.filter(o=>o.status==='pendiente').length+') Pedidos';
+ o.innerHTML=L.map(x=>`<div class="c"><b>${esc(x.pack)} · ${esc(x.price)}</b><br><small>${esc(x.game)} · ID ${esc(x.uid)} · ${esc(x.nick)} · ${esc(x.pay)} · ${new Date(x.ts).toLocaleString('es-ES')}</small><br>${['pendiente','pagado','entregado'].map(s=>`<button class="${x.status===s?'on':''}" onclick="st('${x.id}','${s}')">${s}</button>`).join('')}</div>`).join('')||'<p>Sin pedidos.</p>'}
+async function st(id,status){await api('/api/status',{id,status});load()}
+sc.onclick=async()=>{try{await api('/api/config',JSON.parse(cf.value));alert('Guardado')}catch(e){alert('JSON no válido')}};
+(async()=>{cf.value=JSON.stringify(await api('/api/config'),null,1);load();setInterval(load,20000)})();
+</script></body></html>

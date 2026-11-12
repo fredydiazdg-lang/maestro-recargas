@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Maestro Recargas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f5f5fb;--cd:#fff;--tx:#14142b;--mu:#6b6b85;--ac:#ff9f00;--ac2:#7c3aed;--bd:#dcdcec;--ok:#16a34a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b14;--cd:#161626;--tx:#f3f3fa;--mu:#9a9ab5;--bd:#2a2a44;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b0b14;--cd:#161626;--tx:#f3f3fa;--mu:#9a9ab5;--bd:#2a2a44;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:96px}
+.w{max-width:760px;margin:0 auto;padding:0 14px}
+header{background:linear-gradient(135deg,#2b1065,#7c3aed 60%,#ff9f00);color:#fff;padding:26px 0 22px;text-align:center}
+header h1{margin:0;font-size:28px;letter-spacing:.5px}header p{margin:6px 0 0;opacity:.92;font-size:14px}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:14px 0}
+.st{display:flex;align-items:center;gap:10px;font-weight:700;margin:0 0 12px}.st b{background:var(--ac);color:#000;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px}
+input,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit}
+label{font-size:13px;color:var(--mu);display:block;margin:10px 0 4px}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}.tabs button{white-space:nowrap}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:9px 14px;border-radius:999px}
+button.on{background:var(--ac2);border-color:var(--ac2);color:#fff}
+.g{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.p{border:2px solid var(--bd);border-radius:14px;padding:14px 10px;text-align:center;background:var(--bg);cursor:pointer;border-radius:14px;color:var(--tx)}
+.p.on{border-color:var(--ac);box-shadow:0 0 0 3px rgba(255,159,0,.25)}.p .n{font-weight:700}.p .pr{color:var(--ac);font-weight:800;font-size:18px;margin-top:4px}
+.pay{display:block;width:100%;text-align:left;border-radius:14px;margin-bottom:8px;padding:12px 14px}
+.box{background:var(--bg);border:1px dashed var(--ac);border-radius:12px;padding:12px;margin-top:8px;white-space:pre-wrap;font-size:14px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--cd);border-top:1px solid var(--bd);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:12px;z-index:5}
+.bar .t{flex:1;font-size:13px;color:var(--mu)}.bar .t b{display:block;color:var(--tx);font-size:19px}
+.go{background:var(--ok);color:#fff;border:0;padding:13px 20px;font-weight:700;border-radius:12px}
+.ben{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;font-size:12px;color:var(--mu);margin-top:12px}.ben span{display:block;font-size:22px}
+footer{text-align:center;color:var(--mu);font-size:13px;padding:10px 0 20px}footer a{color:var(--mu);margin:0 6px;cursor:pointer;text-decoration:underline}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20;overflow:auto;padding:16px}.mo .card{max-width:640px;margin:20px auto}
+.mo h3{margin-top:0}.mo .x{float:right}.row{display:grid;gap:6px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.r2{display:grid;grid-template-columns:1fr 1fr 90px 40px;gap:6px}
+</style></head><body>
+<script type="application/json" id="cfg">{"store":"Maestro Recargas","wa":"34641384098","cur":"€","email":"","legal":"","nif":"","banner":"Recargas rápidas y seguras · Entrega en minutos","products":[{"game":"Free Fire","name":"100 💎","price":1.1},{"game":"Free Fire","name":"310 💎","price":3.3},{"game":"Free Fire","name":"520 💎","price":5.5},{"game":"Free Fire","name":"1060 💎","price":11},{"game":"Free Fire","name":"2180 💎","price":22},{"game":"Free Fire","name":"Tarjeta semanal","price":1.99},{"game":"Free Fire","name":"Tarjeta mensual","price":9.99}],"pays":[{"name":"Bizum","info":"Envía el pago al número: (pon aquí tu número)","on":true},{"name":"Transferencia bancaria","info":"Titular: (tu nombre)\nIBAN: (tu IBAN)","on":true},{"name":"PayPal","info":"Envía a: (tu correo PayPal) como familia/amigos","on":true},{"name":"USDT (cripto)","info":"Red y dirección: (tu wallet)","on":false}]}</script>
+<div id="app"></div><div id="adm"></div>
+<script>
+let D=JSON.parse(document.getElementById('cfg').textContent),draft=null;
+const S={game:null,pid:null,pay:null,uid:'',nick:''};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const money=n=>(+n).toFixed(2).replace('.',',')+' '+D.cur;
+let canAdmin=false;
+function render(){
+ const games=[...new Set(D.products.map(p=>p.game))];
+ if(!games.includes(S.game))S.game=games[0]||null;
+ const prods=D.products.map((p,i)=>({...p,i})).filter(p=>p.game===S.game);
+ const pays=D.pays.map((p,i)=>({...p,i})).filter(p=>p.on);
+ const sel=D.products[S.pid],pm=D.pays[S.pay];
+ $('#app').innerHTML=`<header><div class="w"><h1>💎 ${esc(D.store)}</h1><p>${esc(D.banner)}</p></div></header><div class="w">
+ <div class="card"><div class="st"><b>1</b>Tu ID de jugador</div><input id="uid" inputmode="numeric" placeholder="ID del jugador" value="${esc(S.uid)}"><label>Nombre en el juego (para verificar tu cuenta)</label><input id="nick" placeholder="Tu nombre en el juego" value="${esc(S.nick)}">
+ <div class="ben"><div><span>⚡</span>Entrega rápida</div><div><span>🔒</span>Pago seguro</div><div><span>💬</span>Soporte WhatsApp</div></div></div>
+ <div class="card"><div class="st"><b>2</b>Elige tu recarga</div><div class="tabs">${games.map(g=>`<button class="${g===S.game?'on':''}" data-g="${esc(g)}">${esc(g)}</button>`).join('')}</div>
+ <div class="g">${prods.map(p=>`<div class="p ${S.pid===p.i?'on':''}" data-p="${p.i}"><div class="n">${esc(p.name)}</div><div class="pr">${money(p.price)}</div></div>`).join('')||'<p>Próximamente.</p>'}</div></div>
+ <div class="card"><div class="st"><b>3</b>Método de pago</div>${pays.map(p=>`<button class="pay ${S.pay===p.i?'on':''}" data-m="${p.i}">${esc(p.name)}</button>`).join('')}
+ ${pm&&pm.on?`<div class="box">${esc(pm.info)}</div><p style="font-size:13px;color:var(--mu)">Haz el pago y pulsa «Pedir por WhatsApp» para enviar tu pedido y el comprobante.</p>`:''}</div>
+ <footer><a data-l="t">Términos</a>·<a data-l="p">Privacidad</a>·<a data-l="r">Reembolsos</a>${canAdmin?'·<a data-l="a">⚙ Admin</a>':''}<br>© ${new Date().getFullYear()} ${esc(D.store)}. No afiliado a Garena ni a ningún editor de juegos.</footer></div>
+ <div class="bar"><div class="t">${sel?esc(sel.name):'Elige un pack'}<b>${sel?money(sel.price):'—'}</b></div><button class="go" id="go">Pedir por WhatsApp</button></div>`;
+}
+document.addEventListener('input',e=>{if(e.target.id==='uid')S.uid=e.target.value;if(e.target.id==='nick')S.nick=e.target.value});
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-g],[data-p],[data-m],[data-l],#go');if(!t||t.closest('#adm'))return;
+ if(t.dataset.g){S.game=t.dataset.g;S.pid=null}
+ else if(t.dataset.p)S.pid=+t.dataset.p;
+ else if(t.dataset.m)S.pay=+t.dataset.m;
+ else if(t.dataset.l){legal(t.dataset.l);return}
+ else if(t.id==='go'){order();return}
+ render()});
+function order(){
+ const p=D.products[S.pid],m=D.pays[S.pay];
+ if(!S.uid.trim())return alert('Escribe tu ID de jugador.');
+ if(!S.nick.trim())return alert('Escribe tu nombre en el juego.');
+ if(!p)return alert('Elige una recarga.');
+ if(!m)return alert('Elige un método de pago.');
+ const msg=`Hola, quiero hacer un pedido en ${D.store}:\n• Juego: ${p.game}\n• Pack: ${p.name}\n• Precio: ${money(p.price)}\n• ID: ${S.uid.trim()}${S.nick?'\n• Nombre: '+S.nick:''}\n• Pago: ${m.name}\nTe envío el comprobante.`;
+ fetch('/api/order',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({game:p.game,pack:p.name,price:money(p.price),uid:S.uid.trim(),nick:S.nick.trim(),pay:m.name})}).catch(()=>{});
+ window.open('https://wa.me/'+D.wa+'?text='+encodeURIComponent(msg),'_blank');
+}
+function modal(h){const m=document.createElement('div');m.className='mo';m.innerHTML='<div class="card"><button class="x">Cerrar</button>'+h+'</div>';m.addEventListener('click',e=>{if(e.target===m||e.target.classList.contains('x'))m.remove()});document.body.appendChild(m);return m}
+function legal(k){
+ if(k==='a')return admin();
+ const who=esc(D.legal||D.store)+(D.nif?' (NIF/CIF '+esc(D.nif)+')':'')+(D.email?' · '+esc(D.email):'');
+ const T={t:['Términos y condiciones',`<p>${who} ofrece un servicio de recarga de saldo y contenido digital para videojuegos. Al realizar un pedido aceptas estos términos.</p><p>El cliente es responsable de facilitar un ID de jugador correcto. Las recargas se entregan tras confirmar el pago, normalmente en pocos minutos. Los precios incluyen los impuestos aplicables.</p><p>Este sitio es independiente y no está afiliado, patrocinado ni respaldado por Garena ni por ningún editor de videojuegos; las marcas pertenecen a sus propietarios.</p>`],
+ p:['Política de privacidad',`<p>Responsable: ${who}.</p><p>Tratamos únicamente los datos necesarios para gestionar tu pedido (ID de jugador, nombre y datos de contacto/pago que nos envíes). No vendemos tus datos. Puedes ejercer tus derechos de acceso, rectificación y supresión (RGPD) escribiéndonos por WhatsApp o correo.</p>`],
+ r:['Reembolsos y entregas',`<p>Al ser contenido digital entregado de inmediato, no hay desistimiento una vez completada la recarga, con tu consentimiento expreso al pedirla. Si hubo un error por nuestra parte, o pagaste y no recibiste el pedido, contáctanos por WhatsApp y lo resolveremos o reembolsaremos.</p>`]}[k];
+ modal('<h3>'+T[0]+'</h3>'+T[1]);
+}
+function admin(){
+ draft=JSON.parse(JSON.stringify(D));
+ const m=modal('<div id="af"></div>');m.id='am';m.querySelector('.card').style.maxWidth='720px';
+ const draw=()=>{m.querySelector('#af').innerHTML=`<h3>⚙ Panel de administración</h3><p><button data-ord="1">📦 Ver pedidos</button></p>
+ ${[['store','Nombre de la tienda'],['banner','Frase bajo el nombre'],['wa','WhatsApp (con prefijo, sin +)'],['cur','Moneda'],['email','Correo de contacto'],['legal','Razón social / titular'],['nif','NIF/CIF']].map(([k,l])=>`<label>${l}</label><input data-f="${k}" value="${esc(draft[k])}">`).join('')}
+ <h3>Productos</h3><p style="font-size:12px;color:var(--mu)">Juego · Nombre · Precio</p>${draft.products.map((p,i)=>`<div class="r2" style="margin-bottom:6px"><input data-a="products" data-i="${i}" data-k="game" value="${esc(p.game)}"><input data-a="products" data-i="${i}" data-k="name" value="${esc(p.name)}"><input data-a="products" data-i="${i}" data-k="price" inputmode="decimal" value="${p.price}"><button data-del="products" data-i="${i}">✕</button></div>`).join('')}<button data-add="products">+ Producto</button>
+ <h3>Métodos de pago</h3>${draft.pays.map((p,i)=>`<div class="row"><input data-a="pays" data-i="${i}" data-k="name" value="${esc(p.name)}"><textarea rows="2" data-a="pays" data-i="${i}" data-k="info">${esc(p.info)}</textarea><div><label style="display:inline"><input type="checkbox" style="width:auto" data-a="pays" data-i="${i}" data-k="on" ${p.on?'checked':''}> Visible</label> <button data-del="pays" data-i="${i}">Borrar</button></div></div>`).join('')}<button data-add="pays">+ Método de pago</button>
+ <p><button class="go" id="sv">Guardar y publicar cambios</button></p>`};
+ draw();
+ m.addEventListener('input',e=>{const t=e.target;if(t.dataset.f)draft[t.dataset.f]=t.value;else if(t.dataset.a){const o=draft[t.dataset.a][t.dataset.i],k=t.dataset.k;o[k]=t.type==='checkbox'?t.checked:k==='price'?parseFloat(String(t.value).replace(',','.'))||0:t.value}});
+ m.addEventListener('click',async e=>{const t=e.target;
+  if(t.dataset.del){draft[t.dataset.del].splice(+t.dataset.i,1);draw()}
+  else if(t.dataset.add){draft[t.dataset.add].push(t.dataset.add==='products'?{game:draft.products[0]?draft.products[0].game:'Free Fire',name:'Nuevo pack',price:1}:{name:'Nuevo método',info:'',on:true});draw()}
+  else if(t.id==='sv')await save();else if(t.dataset.ord)orders()});
+}
+async function orders(){
+ const m=modal('<h3>📦 Pedidos</h3><div id="ol">Cargando…</div>');
+ let db=null;try{db=await claude.use('db')}catch(e){}
+ if(!db){m.querySelector('#ol').textContent='Los pedidos solo se guardan abriendo la página desde tu cuenta de Claude.';return}
+ const col=db.collection('orders'),ST=['pendiente','pagado','entregado'];
+ const parse=t=>{const g=k=>((t.match(new RegExp('• '+k+': (.*)'))||[])[1]||'').trim();return{pack:g('Pack'),game:g('Juego'),price:g('Precio'),uid:g('ID'),nick:g('Nombre'),pay:g('Pago')}};
+ m.querySelector('#ol').innerHTML='<textarea id="pt" rows="4" placeholder="Pega aquí el mensaje de WhatsApp del cliente"></textarea><p><button id="pa">+ Añadir pedido</button></p><div id="ll"></div>';
+ m.querySelector('#pa').onclick=async()=>{const o=parse(m.querySelector('#pt').value);if(!o.uid)return alert('No encuentro el ID. Pega el mensaje completo del cliente.');o.status='pendiente';o.ts=Date.now();try{await col.add(o);m.querySelector('#pt').value=''}catch(e){alert('No se pudo guardar el pedido.')}};
+ const unsub=col.onSnapshot(s=>{
+  const L=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.ts-a.ts);
+  m.querySelector('h3').textContent='📦 Pedidos · '+L.filter(o=>o.status==='pendiente').length+' pendientes';
+  m.querySelector('#ll').innerHTML=L.map(o=>`<div class="row"><b>${esc(o.pack)} · ${esc(o.price)}</b><span style="font-size:13px;color:var(--mu)">${esc(o.game)} · ID ${esc(o.uid)} ${esc(o.nick)} · ${esc(o.pay)} · ${new Date(o.ts).toLocaleString('es-ES')}</span><div>${ST.map(x=>`<button class="${o.status===x?'on':''}" data-s="${x}" data-id="${o.id}">${x}</button>`).join(' ')} <button data-rm="${o.id}">✕</button></div></div>`).join('')||'<p>Sin pedidos todavía.</p>'},()=>{});
+ m.addEventListener('click',async e=>{const t=e.target;try{if(t.dataset.s)await col.doc(t.dataset.id).update({status:t.dataset.s});if(t.dataset.rm&&confirm('¿Borrar este pedido?'))await col.doc(t.dataset.rm).delete()}catch(x){alert('No se pudo actualizar.')}if(t===m||t.classList.contains('x'))unsub()});
+}
+async function save(){
+ try{const a=await claude.use('artifact');if(!a)return alert('Guardar solo funciona abriendo la página desde tu cuenta de Claude.');
+ const c=document.documentElement.cloneNode(true);c.querySelector('#app').innerHTML='';c.querySelector('#adm').innerHTML='';
+ c.querySelectorAll('.mo').forEach(n=>n.remove());
+ c.querySelector('#cfg').textContent=JSON.stringify(draft).replace(/</g,'\\u003c');
+ await a.publish('<!DOCTYPE html>'+c.outerHTML);
+ }catch(e){alert('No se pudo guardar: '+((e&&(e.message||e.code))||e))}
+}
+let nt;document.addEventListener('input',e=>{if(e.target.id!=='uid')return;clearTimeout(nt);const v=e.target.value.trim();if(v.length<6)return;nt=setTimeout(async()=>{try{const j=await(await fetch('/api/nick?id='+encodeURIComponent(v))).json();const n=$('#nick');if(j.nick){S.nick=j.nick;n.value=j.nick;n.readOnly=true;n.previousElementSibling.textContent='✔ Cuenta verificada'}}catch(x){}},600)});
+render();
+if(window.claude&&claude.use)claude.use('user').then(u=>{if(u&&u.canEdit()){canAdmin=true;render()}}).catch(()=>{});
+</script></body></html>
